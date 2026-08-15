@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Sora:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #111827;
+  --color-surface: #1e293b;
+  --color-text-primary: #e5e7eb;
+  --color-text-accent: #94a3b8;
+  --color-accent: #f59e0b;
+  --color-cyan: #22d3ee;
+  --color-success: #10b981;
+}
+
+body {
+  @apply bg-bgPrimary text-textPrimary font-body antialiased;
+  background-image:
+    radial-gradient(920px circle at 12% -8%, rgba(30, 58, 138, 0.26), transparent 54%),
+    radial-gradient(760px circle at 90% 2%, rgba(14, 165, 233, 0.16), transparent 46%),
+    linear-gradient(170deg, #0f172a 0%, #111827 56%, #0f172a 100%);
+  min-height: 100vh;
+}
+
+::selection {
+  background: rgba(245, 158, 11, 0.28);
+  color: #f8fafc;
+}
+
+.bookmark-container {
+margin-top: 20px;
+display: flex;
+justify-content: center;
+}
+
+.container {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.save-regular,
+.save-solid {
+  width: 24px;
+  height: 24px;
+  color: #f59e0b;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.save-solid {
+  position: absolute;
+  opacity: 0;
+  transform: scale(0.86);
+}
+
+.container input:checked + .save-regular {
+  opacity: 0;
+  transform: scale(0.86);
+}
+
+.container input:checked + .save-regular + .save-solid {
+  opacity: 1;
+  transform: scale(1);
+}
