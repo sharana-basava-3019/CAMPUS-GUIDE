@@ -11,7 +11,7 @@ export default function GuestRestrictedPage() {
 
   useEffect(() => {
     if (!isGuest) {
-      navigate('/')
+      navigate('/', { replace: true })
     }
   }, [isGuest, navigate])
 

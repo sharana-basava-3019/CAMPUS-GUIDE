@@ -23,7 +23,7 @@ export default function ChangePasswordPage() {
   useEffect(() => {
     window.scrollTo(0, 0)
     if (!user?.token) {
-      navigate('/login')
+      navigate('/login', { replace: true })
     }
   }, [navigate, user?.token])
 
@@ -31,7 +31,7 @@ export default function ChangePasswordPage() {
     e.preventDefault()
 
     if (!user?.token) {
-      navigate('/login')
+      navigate('/login', { replace: true })
       return
     }
 

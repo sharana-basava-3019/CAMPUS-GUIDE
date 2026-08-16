@@ -12,6 +12,7 @@ import SignupPage from './pages/SignupPage'
 import TermsPage from './pages/TermsPage'
 import GuestRestrictedPage from './pages/GuestRestrictedPage'
 import { ToastProvider } from './components/ui/ToastSystem'
+import { RequireAuth, RedirectIfAuthed } from './components/ui/RouteGuards'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -19,17 +20,24 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ToastProvider>
         <Routes>
-          <Route path="/"       element={<App />} />
-          <Route path="/admin"  element={<AdminPage />} />
-          <Route path="/about"  element={<AboutPage />} />
-          <Route path="/change-password" element={<ChangePasswordPage />} />
-          <Route path="/edit-profile" element={<EditProfilePage />} />
-          <Route path="/login"  element={<LoginPage />} />
+          {/* Public routes — accessible without login */}
+          <Route path="/"        element={<App />} />
+          <Route path="/about"   element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/terms"  element={<TermsPage />} />
+          <Route path="/terms"   element={<TermsPage />} />
+
+          {/* Auth routes — redirect away if already logged in */}
+          <Route path="/login"  element={<RedirectIfAuthed><LoginPage /></RedirectIfAuthed>} />
+          <Route path="/signup" element={<RedirectIfAuthed><SignupPage /></RedirectIfAuthed>} />
+
+          {/* Protected routes — require a valid JWT token */}
+          <Route path="/admin"           element={<RequireAuth><AdminPage /></RequireAuth>} />
+          <Route path="/change-password" element={<RequireAuth><ChangePasswordPage /></RequireAuth>} />
+          <Route path="/edit-profile"    element={<RequireAuth><EditProfilePage /></RequireAuth>} />
+
+          {/* Guest-mode restricted notice — accessible to guests; non-guests redirected in-component */}
           <Route path="/resources" element={<GuestRestrictedPage />} />
-          <Route path="/download" element={<GuestRestrictedPage />} />
+          <Route path="/download"  element={<GuestRestrictedPage />} />
         </Routes>
       </ToastProvider>
     </BrowserRouter>

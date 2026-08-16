@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Navbar } from '../components/sections/Navbar'
 import { Footer } from '../components/sections/Footer'
 import { PrimaryButton } from '../components/ui/Buttons'
@@ -16,6 +16,7 @@ export default function SignupPage() {
   const { pushToast } = useToast()
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -26,13 +27,19 @@ export default function SignupPage() {
     setLoading(true)
     try {
       const { data } = await axios.post('http://localhost:5000/api/auth/register', { email, password, role })
-      login(data)  // updates localStorage + triggers Navbar re-render
+      login(data)  // updates sessionStorage + triggers Navbar re-render
       pushToast({
         type: 'success',
         title: 'Account Created',
         message: 'Your CAMPUS GUIDE account is ready.',
       })
-      navigate('/')
+      const params = new URLSearchParams(location.search)
+      const from = params.get('from')
+      const safePath =
+        from && from.startsWith('/') && !from.startsWith('//')
+          ? from
+          : '/'
+      navigate(safePath, { replace: true })
     } catch (error) {
       pushToast({
         type: 'error',

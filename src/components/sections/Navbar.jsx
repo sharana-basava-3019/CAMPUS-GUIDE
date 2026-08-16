@@ -73,7 +73,7 @@ export const Navbar = () => {
     setOpen(false)
     setMobileMenuOpen(false)
     logout()
-    navigate('/login')
+    navigate('/login', { replace: true })
   }
 
   const handleContinueAsGuest = () => {
@@ -93,7 +93,7 @@ export const Navbar = () => {
   const handleExitGuestMode = () => {
     setOpen(false)
     exitGuestMode()
-    navigate('/')
+    navigate('/', { replace: true })
   }
 
   const goToAccountPage = (path) => {

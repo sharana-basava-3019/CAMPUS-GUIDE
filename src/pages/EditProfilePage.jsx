@@ -22,7 +22,7 @@ export default function EditProfilePage() {
   useEffect(() => {
     window.scrollTo(0, 0)
     if (!user?.token) {
-      navigate('/login')
+      navigate('/login', { replace: true })
     }
   }, [navigate, user?.token])
 
@@ -34,7 +34,7 @@ export default function EditProfilePage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!user?.token) {
-      navigate('/login')
+      navigate('/login', { replace: true })
       return
     }
 

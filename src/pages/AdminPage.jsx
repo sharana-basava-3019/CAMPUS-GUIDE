@@ -61,11 +61,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (!user?.token) {
-      navigate('/login')
+      navigate('/login', { replace: true })
       return
     }
     if (!isAdmin) {
-      navigate('/')
+      navigate('/', { replace: true })
       return
     }
   }, [user?.token, isAdmin, navigate])
@@ -110,7 +110,7 @@ export default function AdminPage() {
 
         if (statuses.includes(401) || statuses.includes(403)) {
           logout()
-          navigate('/login')
+          navigate('/login', { replace: true })
           pushToast({
             type: 'error',
             title: 'Session expired',

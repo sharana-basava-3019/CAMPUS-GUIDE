@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Navbar } from '../components/sections/Navbar'
 import { Footer } from '../components/sections/Footer'
 import { PrimaryButton } from '../components/ui/Buttons'
@@ -17,6 +17,7 @@ export default function LoginPage() {
   const { pushToast } = useToast()
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -39,7 +40,16 @@ export default function LoginPage() {
         message: `Welcome back, ${(data.user?.email || data.email)}!`,
       })
       const loginRole = (data.user?.role || data.role || role || '').toLowerCase()
-      navigate(loginRole === 'admin' ? '/admin' : '/')
+      // Redirect back to the originally requested URL (?from=) if present and safe.
+      const params = new URLSearchParams(location.search)
+      const from = params.get('from')
+      const safePath =
+        from && from.startsWith('/') && !from.startsWith('//')
+          ? from
+          : loginRole === 'admin'
+          ? '/admin'
+          : '/'
+      navigate(safePath, { replace: true })
     } catch (error) {
       pushToast({
         type: 'error',
