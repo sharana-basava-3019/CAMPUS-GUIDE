@@ -3,7 +3,7 @@
 > A smart campus resource discovery platform that merges a searchable academic resource hub, role-based access control, and an interactive 3D campus map into a single unified experience.
 
 <p align="center">
-  <img src="public/logo.png" alt="Campus Guide Logo" width="120" />
+  <img src="frontend/public/logo.png" alt="Campus Guide Logo" width="120" />
 </p>
 
 ---
@@ -58,22 +58,15 @@ CAMPUS-GUIDE/
 │   ├── middleware/          # JWT auth & role guards
 │   ├── services/            # Notification service
 │   └── uploads/             # User-uploaded files (git-ignored)
-├── src/
-│   ├── main.jsx             # React entry point
-│   ├── App.jsx              # Root router
-│   ├── components/
-│   │   ├── map/             # 3D map scene & building components
-│   │   ├── admin/           # Admin panel components
-│   │   ├── sections/        # Landing page sections
-│   │   └── ui/              # Shared UI primitives
-│   ├── pages/               # Route-level page components
-│   ├── hooks/               # Custom React hooks
-│   └── store/               # Zustand state stores
-├── public/                  # Static assets (logo, images, videos)
-├── index.html
-├── vite.config.js
-├── tailwind.config.js
-└── package.json
+├── frontend/
+│   ├── src/                 # React source code (components, pages, 3D map)
+│   ├── public/              # Static assets (logo, images, videos)
+│   ├── index.html
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── package.json
+├── package.json             # Root workspace runner
+└── README.md
 ```
 
 ---
@@ -90,19 +83,16 @@ git clone https://github.com/sharana-basava-3019/CAMPUS-GUIDE.git
 cd CAMPUS-GUIDE
 ```
 
-### 2. Install frontend dependencies
+### 2. Install dependencies
 ```bash
-npm install
+# Install frontend dependencies
+cd frontend && npm install && cd ..
+
+# Install backend dependencies
+cd backend && npm install && cd ..
 ```
 
-### 3. Install backend dependencies
-```bash
-cd backend
-npm install
-cd ..
-```
-
-### 4. Configure environment variables
+### 3. Configure environment variables
 ```bash
 cp backend/.env.example backend/.env
 ```
@@ -118,16 +108,18 @@ ADMIN_SECRET_KEY=your_admin_secret
 
 > ⚠️ **Never commit your `.env` file.** It is listed in `.gitignore`.
 
-### 5. Start the backend
+### 4. Start the backend
 ```bash
 cd backend
 npm start
 # Server runs at http://localhost:5000
 ```
 
-### 6. Start the frontend (separate terminal)
+### 5. Start the frontend (separate terminal or from root)
 ```bash
+# From root directory
 npm run dev
+# Or inside frontend folder: cd frontend && npm run dev
 # App runs at http://localhost:5173
 ```
 
