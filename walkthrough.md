@@ -173,24 +173,30 @@ CAMPUS-GUIDE/
 │   ├── services/
 │   │   └── notificationService.js # Helper functions for bulk notification inserts
 │   └── uploads/              # Local storage folder for Multer file uploads
-├── src/                      # Vite Frontend
-│   ├── main.jsx              # App mounting point, ToastProvider, Router
-│   ├── App.jsx               # Home Page layout and visual sections
-│   ├── index.css             # Main styling, custom scrolls, scrollbar hiding
-│   ├── store/
-│   │   └── useMapStore.js    # Zustand store (buildings catalog, navigator inputs)
-│   ├── hooks/
-│   │   └── useAuth.js        # Reactive Auth hook with cross-tab sync listener
-│   ├── utils/
-│   │   └── accessControl.js  # Feature capability permission rules
-│   ├── pages/                # Pages (Admin, Login, Signup, About, Profiles)
-│   └── components/
-│       ├── admin/            # Admin dashboard components and tables
-│       ├── map/              # 3D canvas and R3F building/path elements
-│       ├── sections/         # Home page layout sections (Hero, Navbar, Tabs)
-│       └── ui/               # Auth Guards, Custom Buttons, Notification Bell
-├── index.html                # SPA HTML mount page
-└── vite.config.js            # Vite configurations
+├── frontend/                 # Vite & React Frontend Application
+│   ├── public/               # Static public assets and icons
+│   ├── src/                  # Application source code
+│   │   ├── main.jsx          # App mounting point, ToastProvider, Router
+│   │   ├── App.jsx           # Home Page layout and visual sections
+│   │   ├── index.css         # Main styling, custom scrolls, scrollbar hiding
+│   │   ├── store/
+│   │   │   └── useMapStore.js# Zustand store (buildings catalog, navigator inputs)
+│   │   ├── hooks/
+│   │   │   └── useAuth.js    # Reactive Auth hook with cross-tab sync listener
+│   │   ├── utils/
+│   │   │   └── accessControl.js # Feature capability permission rules
+│   │   ├── pages/            # Pages (Admin, Login, Signup, About, Profiles)
+│   │   └── components/
+│   │       ├── admin/        # Admin dashboard components and tables
+│   │       ├── map/          # 3D canvas and R3F building/path elements
+│   │       ├── sections/     # Home page layout sections (Hero, Navbar, Tabs)
+│   │       └── ui/           # Auth Guards, Custom Buttons, Notification Bell
+│   ├── index.html            # SPA HTML mount page
+│   ├── vite.config.js        # Vite configurations
+│   ├── tailwind.config.js    # Tailwind styling configuration
+│   └── package.json          # Frontend dependencies & scripts
+├── package.json              # Root workspace task runner
+└── walkthrough.md            # Architecture & system documentation
 ```
 
 ---
