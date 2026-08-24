@@ -27,7 +27,7 @@ router.get('/buildings', async (req, res) => {
 });
 
 // GET /api/resources?search=&from=&to=
-router.get('/', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.get('/', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   const { search, from, to } = req.query;
   try {
     let query = {};
@@ -53,7 +53,7 @@ router.get('/', protect, allowRoles('student', 'professor'), async (req, res) =>
 });
 
 // GET /api/resources/download/:id
-router.get('/download/:id', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.get('/download/:id', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   try {
     const resource = await Resource.findById(req.params.id);
     if (!resource) {
@@ -78,7 +78,7 @@ router.get('/download/:id', protect, allowRoles('student', 'professor'), async (
   }
 });
 
-router.get('/downloads', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.get('/downloads', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   try {
     const downloads = await Download.find({ user: req.user._id })
       .sort({ downloadedAt: -1 })
@@ -90,7 +90,7 @@ router.get('/downloads', protect, allowRoles('student', 'professor'), async (req
   }
 });
 
-router.get('/bookmarks', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.get('/bookmarks', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   try {
     const existing = await Bookmark.find({ user: req.user._id })
       .sort({ createdAt: -1 })
@@ -128,7 +128,7 @@ router.get('/bookmarks', protect, allowRoles('student', 'professor'), async (req
   }
 });
 
-router.post('/bookmark', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.post('/bookmark', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   const { resourceId } = req.body;
 
   if (!resourceId) {
@@ -161,7 +161,7 @@ router.post('/bookmark', protect, allowRoles('student', 'professor'), async (req
   }
 });
 
-router.delete('/bookmarks/:resourceId', protect, allowRoles('student', 'professor'), async (req, res) => {
+router.delete('/bookmarks/:resourceId', protect, allowRoles('student', 'professor', 'admin'), async (req, res) => {
   try {
     await Bookmark.findOneAndDelete({
       user: req.user._id,

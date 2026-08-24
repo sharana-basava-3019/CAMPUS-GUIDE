@@ -83,7 +83,7 @@ function SearchTabContent() {
       return
     }
     if (!canDownloadResources) {
-      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student/Professor to access resources' })
+      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student, Professor, or Admin to access resources' })
       return
     }
 
@@ -96,7 +96,7 @@ function SearchTabContent() {
         pushToast({
           type: 'error',
           title: 'Download blocked',
-          message: error.response?.status === 403 ? 'Login as Student/Professor to access resources' : 'Could not start download.',
+          message: error.response?.status === 403 ? 'Login as Student, Professor, or Admin to access resources' : 'Could not start download.',
         })
       })
   }
@@ -169,7 +169,7 @@ function SearchTabContent() {
       return
     }
     if (!canSearchResources) {
-      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student/Professor to access resources' })
+      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student, Professor, or Admin to access resources' })
       return
     }
 
@@ -187,7 +187,7 @@ function SearchTabContent() {
       pushToast({
         type: 'error',
         title: 'Search failed',
-        message: error.response?.status === 403 ? 'Login as Student/Professor to access resources' : 'Could not connect to server.',
+        message: error.response?.status === 403 ? 'Login as Student, Professor, or Admin to access resources' : 'Could not connect to server.',
       })
     } finally {
       setLoading(false)
@@ -219,7 +219,7 @@ function SearchTabContent() {
         <div className="flex-1 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
           {!canSearchResources ? (
             <div className="h-full flex items-center justify-center opacity-70 text-center">
-              <p className="text-sm text-textAccent italic">Login as Student/Professor to access resources</p>
+              <p className="text-sm text-textAccent italic">Login to access resources</p>
             </div>
           ) : resources.length > 0 ? (
             resources.map((r) => (
@@ -314,7 +314,7 @@ function DownloadTabContent() {
   const normalizedRole = String(user?.role || 'guest').toLowerCase()
   const isProfessor = normalizedRole === 'professor' || normalizedRole === 'faculty'
   const isStudent = normalizedRole === 'student'
-  const isGuest = !user?.token || normalizedRole === 'guest'
+  const isGuest = !user?.token || (normalizedRole === 'guest') || (!canDownloadResources && !canUploadResources)
 
   const getAuthConfig = () => ({
     headers: {
@@ -380,7 +380,7 @@ function DownloadTabContent() {
       return
     }
     if (!canDownloadResources) {
-      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student or Professor to access resources' })
+      pushToast({ type: 'info', title: 'Access denied', message: 'Login as Student, Professor, or Admin to access resources' })
       return
     }
     if (!resourceId) {
@@ -470,7 +470,7 @@ function DownloadTabContent() {
 
         {isGuest ? (
           <div className="flex h-full items-center justify-center text-center">
-            <p className="text-sm text-textAccent">Login as Student or Professor to access resources</p>
+            <p className="text-sm text-textAccent">Login to access resources</p>
           </div>
         ) : isStudent ? (
           <>
@@ -609,7 +609,7 @@ function DownloadTabContent() {
             </p>
           ) : (
             <p className="text-sm text-textAccent max-w-xs">
-              Login as Student or Professor to access resources
+              Login to access resources
             </p>
           )}
         </motion.div>
