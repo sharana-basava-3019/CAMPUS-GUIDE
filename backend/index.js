@@ -47,7 +47,7 @@ const createDefaultAdmin = async () => {
   }
 };
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/resourcenet')
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/campus-guide')
   .then(async () => {
     console.log('Connected to MongoDB');
     await createDefaultAdmin();
