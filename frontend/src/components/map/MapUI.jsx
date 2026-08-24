@@ -4,39 +4,41 @@ import axios from 'axios'
 import useMapStore, { BUILDINGS } from '../../store/useMapStore'
 import { useToast } from '../ui/ToastSystem'
 import { API_BASE_URL as API_BASE } from '../../config/api'
+import { useAuth } from '../../hooks/useAuth'
 
 // Map building TYPE → DB location string (single source of truth)
 const TYPE_TO_LOCATION = {
-  library:    'Library',
-  lab:        'Lab',
-  classroom:  'Classroom',
-  cafeteria:  null,
-  admin:      null,
+  library: 'Library',
+  lab: 'Lab',
+  classroom: 'Classroom',
+  cafeteria: null,
+  admin: null,
   auditorium: null,
   playground: null,
 }
 
 // Fallback resources shown when backend has no data for a building
 const FALLBACK_RESOURCES = {
-  library:    [{ _id: 'f1', title: 'General Reference Guide',    subject: 'All Subjects',   fileUrl: '#' }],
-  lab:        [{ _id: 'f2', title: 'Lab Safety Manual',          subject: 'Science',        fileUrl: '#' }],
-  classroom:  [{ _id: 'f3', title: 'Course Syllabus Pack',       subject: 'General',        fileUrl: '#' }],
-  cafeteria:  [{ _id: 'f6', title: 'Campus Facilities Guide',    subject: 'Campus Life',    fileUrl: '#' }],
-  admin:      [{ _id: 'f4', title: 'Campus Map & Directory',     subject: 'Administration', fileUrl: '#' }],
-  auditorium: [{ _id: 'f5', title: 'Event Schedule & Programs',  subject: 'Campus Life',    fileUrl: '#' }],
-  playground: [{ _id: 'f7', title: 'Playground Usage Guidelines', subject: 'Campus Life',   fileUrl: '#' }],
+  library: [{ _id: 'f1', title: 'General Reference Guide', subject: 'All Subjects', fileUrl: '#' }],
+  lab: [{ _id: 'f2', title: 'Lab Safety Manual', subject: 'Science', fileUrl: '#' }],
+  classroom: [{ _id: 'f3', title: 'Course Syllabus Pack', subject: 'General', fileUrl: '#' }],
+  cafeteria: [{ _id: 'f6', title: 'Campus Facilities Guide', subject: 'Campus Life', fileUrl: '#' }],
+  admin: [{ _id: 'f4', title: 'Campus Map & Directory', subject: 'Administration', fileUrl: '#' }],
+  auditorium: [{ _id: 'f5', title: 'Event Schedule & Programs', subject: 'Campus Life', fileUrl: '#' }],
+  playground: [{ _id: 'f7', title: 'Playground Usage Guidelines', subject: 'Campus Life', fileUrl: '#' }],
 }
 
 
 const TYPE_BADGE = {
-  library:   'bg-accentCyan/20 text-accentCyan',
-  lab:       'bg-success/20 text-success',
+  library: 'bg-accentCyan/20 text-accentCyan',
+  lab: 'bg-success/20 text-success',
   classroom: 'bg-accent/20 text-accent',
-  admin:     'bg-surface/60 text-textPrimary',
-  playground:'bg-emerald-400/20 text-emerald-300',
+  admin: 'bg-surface/60 text-textPrimary',
+  playground: 'bg-emerald-400/20 text-emerald-300',
 }
 
 function SearchPanel() {
+  const { user } = useAuth()
   const {
     startPoint, setStartPoint,
     destination, setDestination,
@@ -91,13 +93,20 @@ function SearchPanel() {
 
     // Map building TYPE to DB location string — e.g. 'LabA' (type=lab) → 'Lab'
     const destBuilding = buildingCatalog[destination]
-    const dbLocation  = TYPE_TO_LOCATION[destBuilding?.type]
-    const fallback    = FALLBACK_RESOURCES[destBuilding?.type] || []
+    const dbLocation = TYPE_TO_LOCATION[destBuilding?.type]
+    const fallback = FALLBACK_RESOURCES[destBuilding?.type] || []
 
     try {
       let resources = []
       if (dbLocation) {
-        const { data } = await axios.get(`${API_BASE}/resources?search=${dbLocation}`)
+        const { data } = await axios.get(
+          `${API_BASE}/resources?search=${encodeURIComponent(dbLocation)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user?.token}`,
+            },
+          }
+        )
         resources = data
       }
       // Always ensure something is displayed — merge fallback if empty
@@ -245,10 +254,10 @@ function BuildingInfoPanel() {
 
 function Legend() {
   const items = [
-    { label: 'Library',   color: '#4a7fa5' },
-    { label: 'Lab',       color: '#4a8f6f' },
-    { label: 'Academic',  color: '#9f7a4a' },
-    { label: 'Admin',     color: '#7a4a9f' },
+    { label: 'Library', color: '#4a7fa5' },
+    { label: 'Lab', color: '#4a8f6f' },
+    { label: 'Academic', color: '#9f7a4a' },
+    { label: 'Admin', color: '#7a4a9f' },
     { label: 'Cafeteria', color: '#a04a4a' },
   ]
   return (
