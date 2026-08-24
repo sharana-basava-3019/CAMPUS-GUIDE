@@ -4,8 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { NotificationBell } from '../ui/NotificationBell'
 import { useToast } from '../ui/ToastSystem'
-
-const API_BASE = 'http://localhost:5000/api'
+import { API_BASE_URL as API_BASE } from '../../config/api'
 
 const Logo = () => (
   <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border border-accentCyan/35 bg-accentCyan/10 p-1 shadow-cyanGlow">

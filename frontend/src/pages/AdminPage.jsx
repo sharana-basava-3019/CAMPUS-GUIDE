@@ -12,8 +12,7 @@ import { ResourcesTable } from '../components/admin/ResourcesTable'
 import { BuildingsTable } from '../components/admin/BuildingsTable'
 import { EditModal } from '../components/admin/EditModal'
 import { ConfirmDialog } from '../components/admin/ConfirmDialog'
-
-const API_BASE = 'http://localhost:5000/api'
+import { API_BASE_URL as API_BASE } from '../config/api'
 
 export default function AdminPage() {
   const navigate = useNavigate()

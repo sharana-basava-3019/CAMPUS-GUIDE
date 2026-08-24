@@ -10,9 +10,9 @@ import ThreeCanvas from '../map/ThreeCanvas'
 import MapUI from '../map/MapUI'
 import { canAccess } from '../../utils/accessControl'
 import axios from 'axios'
+import { API_BASE_URL } from '../../config/api'
 
 const tabs = ['Search', '3D Map', 'Download']
-const API_BASE_URL = 'http://localhost:5000/api'
 
 // ── Search Tab ─────────────────────────────────────────────
 const ResourceCard = ({ resource, onClick }) => (
@@ -407,7 +407,7 @@ function DownloadTabContent() {
       return
     }
 
-    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `http://localhost:5000${fileUrl}`
+    const fullUrl = fileUrl.startsWith('http') ? fileUrl : `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}${fileUrl}`
     window.open(fullUrl, '_blank', 'noopener,noreferrer')
   }
 

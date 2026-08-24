@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
 import useMapStore, { BUILDINGS } from '../../store/useMapStore'
 import { useToast } from '../ui/ToastSystem'
+import { API_BASE_URL as API_BASE } from '../../config/api'
 
 // Map building TYPE → DB location string (single source of truth)
 const TYPE_TO_LOCATION = {
@@ -26,9 +27,7 @@ const FALLBACK_RESOURCES = {
   playground: [{ _id: 'f7', title: 'Playground Usage Guidelines', subject: 'Campus Life',   fileUrl: '#' }],
 }
 
-const API_BASE = 'http://localhost:5000/api'
 
-// Type badge colors
 const TYPE_BADGE = {
   library:   'bg-accentCyan/20 text-accentCyan',
   lab:       'bg-success/20 text-success',

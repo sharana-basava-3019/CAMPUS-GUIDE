@@ -7,8 +7,7 @@ import { Footer } from '../components/sections/Footer'
 import { PrimaryButton } from '../components/ui/Buttons'
 import { useToast } from '../components/ui/ToastSystem'
 import { useAuth } from '../hooks/useAuth'
-
-const API_BASE_URL = 'http://localhost:5000/api'
+import { API_BASE_URL } from '../config/api'
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate()

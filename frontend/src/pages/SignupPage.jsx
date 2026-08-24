@@ -7,6 +7,7 @@ import { PrimaryButton } from '../components/ui/Buttons'
 import { useToast } from '../components/ui/ToastSystem'
 import { useAuth } from '../hooks/useAuth'
 import axios from 'axios'
+import { API_BASE_URL } from '../config/api'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -26,7 +27,7 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { email, password, role })
+      const { data } = await axios.post(`${API_BASE_URL}/auth/register`, { email, password, role })
       login(data)  // updates sessionStorage + triggers Navbar re-render
       pushToast({
         type: 'success',

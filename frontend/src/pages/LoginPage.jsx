@@ -7,6 +7,7 @@ import { PrimaryButton } from '../components/ui/Buttons'
 import { useToast } from '../components/ui/ToastSystem'
 import { useAuth } from '../hooks/useAuth'
 import axios from 'axios'
+import { API_BASE_URL } from '../config/api'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -32,7 +33,7 @@ export default function LoginPage() {
         payload.adminSecretKey = adminSecretKey
       }
 
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', payload)
+      const { data } = await axios.post(`${API_BASE_URL}/auth/login`, payload)
       login(data.user ? { ...data.user, token: data.token } : data)
       pushToast({
         type: 'success',

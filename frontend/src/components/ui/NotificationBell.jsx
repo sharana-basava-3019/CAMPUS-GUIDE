@@ -5,8 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from './ToastSystem'
 import { NotificationItem } from './NotificationItem'
-
-const API_BASE = 'http://localhost:5000/api'
+import { API_BASE_URL as API_BASE } from '../../config/api'
 
 function formatRelativeTime(dateValue) {
   const timestamp = new Date(dateValue).getTime()
