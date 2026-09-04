@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import App from './App'
 import { ToastProvider } from './components/ui/ToastSystem'
 import { RequireAuth, RedirectIfAuthed } from './components/ui/RouteGuards'
@@ -61,6 +62,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/download"  element={<GuestRestrictedPage />} />
           </Routes>
         </Suspense>
+        <Analytics />
       </ToastProvider>
     </BrowserRouter>
   </React.StrictMode>,
