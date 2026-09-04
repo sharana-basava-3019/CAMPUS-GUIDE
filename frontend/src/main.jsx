@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { Analytics } from '@vercel/analytics/react'
 import App from './App'
+import { AuthProvider } from './hooks/useAuth'
 import { ToastProvider } from './components/ui/ToastSystem'
 import { RequireAuth, RedirectIfAuthed } from './components/ui/RouteGuards'
 import './index.css'
@@ -39,31 +40,33 @@ function PageLoader() {
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <ToastProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/"        element={<App />} />
-            <Route path="/about"   element={<AboutPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms"   element={<TermsPage />} />
+      <AuthProvider>
+        <ToastProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/"        element={<App />} />
+              <Route path="/about"   element={<AboutPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms"   element={<TermsPage />} />
 
-            {/* Auth routes */}
-            <Route path="/login"  element={<RedirectIfAuthed><LoginPage /></RedirectIfAuthed>} />
-            <Route path="/signup" element={<RedirectIfAuthed><SignupPage /></RedirectIfAuthed>} />
+              {/* Auth routes */}
+              <Route path="/login"  element={<RedirectIfAuthed><LoginPage /></RedirectIfAuthed>} />
+              <Route path="/signup" element={<RedirectIfAuthed><SignupPage /></RedirectIfAuthed>} />
 
-            {/* Protected routes */}
-            <Route path="/admin"           element={<RequireAuth><AdminPage /></RequireAuth>} />
-            <Route path="/change-password" element={<RequireAuth><ChangePasswordPage /></RequireAuth>} />
-            <Route path="/edit-profile"    element={<RequireAuth><EditProfilePage /></RequireAuth>} />
+              {/* Protected routes */}
+              <Route path="/admin"           element={<RequireAuth><AdminPage /></RequireAuth>} />
+              <Route path="/change-password" element={<RequireAuth><ChangePasswordPage /></RequireAuth>} />
+              <Route path="/edit-profile"    element={<RequireAuth><EditProfilePage /></RequireAuth>} />
 
-            {/* Guest-mode restricted */}
-            <Route path="/resources" element={<GuestRestrictedPage />} />
-            <Route path="/download"  element={<GuestRestrictedPage />} />
-          </Routes>
-        </Suspense>
-        <Analytics />
-      </ToastProvider>
+              {/* Guest-mode restricted */}
+              <Route path="/resources" element={<GuestRestrictedPage />} />
+              <Route path="/download"  element={<GuestRestrictedPage />} />
+            </Routes>
+          </Suspense>
+          <Analytics />
+        </ToastProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

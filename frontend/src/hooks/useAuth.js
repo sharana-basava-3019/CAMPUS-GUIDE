@@ -1,10 +1,12 @@
-import { useState, useEffect, useCallback } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 
 const SESSION_KEY = 'userInfo'
 const CHANNEL_NAME = 'campus_guide_auth'
+const AUTH_EVENT_KEY = 'campus_guide_auth_event'
 
-// BroadcastChannel syncs login/logout across same-origin tabs in the same session.
-// Falls back gracefully (SSR / old browsers that lack BroadcastChannel).
+const AuthContext = createContext(null)
+
+// BroadcastChannel syncs login/logout across same-origin tabs
 let channel = null
 try {
   channel = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel(CHANNEL_NAME) : null
@@ -14,46 +16,56 @@ try {
 
 function readUser() {
   try {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY))
+    const raw = sessionStorage.getItem(SESSION_KEY)
+    return raw ? JSON.parse(raw) : null
   } catch {
     return null
   }
 }
 
-/**
- * Reactive auth hook — reads/writes sessionStorage and re-renders on change.
- * sessionStorage is cleared when the browser tab/window is closed, so a
- * "fresh session" always requires the user to log in again.
- * BroadcastChannel propagates login/logout to other same-session tabs instantly.
- */
-export function useAuth() {
-  const [user, setUserState] = useState(readUser)
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(readUser)
 
-  // Listen for auth changes broadcast from other tabs in this session.
-  useEffect(() => {
-    if (!channel) return
-    const onMessage = (event) => {
-      if (event.data?.type === 'auth_change') {
-        setUserState(readUser())
-      }
-    }
-    channel.addEventListener('message', onMessage)
-    return () => channel.removeEventListener('message', onMessage)
+  const syncUser = useCallback(() => {
+    setUser(readUser())
   }, [])
 
-  /** Notify all other same-session tabs that auth state changed. */
-  const broadcast = () => {
+  useEffect(() => {
+    // 1. Listen for BroadcastChannel messages (from OTHER tabs)
+    const onMessage = (event) => {
+      if (event.data?.type === 'auth_change') {
+        syncUser()
+      }
+    }
+    if (channel) {
+      channel.addEventListener('message', onMessage)
+    }
+
+    // 2. Listen for same-window auth events
+    const onWindowAuth = () => syncUser()
+    window.addEventListener(AUTH_EVENT_KEY, onWindowAuth)
+
+    return () => {
+      if (channel) {
+        channel.removeEventListener('message', onMessage)
+      }
+      window.removeEventListener(AUTH_EVENT_KEY, onWindowAuth)
+    }
+  }, [syncUser])
+
+  const notifyChange = () => {
     try {
       channel?.postMessage({ type: 'auth_change' })
     } catch {
       // channel may be closed; ignore
     }
+    window.dispatchEvent(new Event(AUTH_EVENT_KEY))
   }
 
   const login = useCallback((userData) => {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData))
-    setUserState(userData)
-    broadcast()
+    setUser(userData)
+    notifyChange()
   }, [])
 
   const continueAsGuest = useCallback(() => {
@@ -63,8 +75,8 @@ export function useAuth() {
       isGuest: true,
     }
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(guestUser))
-    setUserState(guestUser)
-    broadcast()
+    setUser(guestUser)
+    notifyChange()
     return guestUser
   }, [])
 
@@ -72,23 +84,65 @@ export function useAuth() {
     sessionStorage.removeItem(SESSION_KEY)
     sessionStorage.removeItem('guestNotifications')
     sessionStorage.removeItem('guestKnownBuildingIds')
-    setUserState(null)
-    broadcast()
+    setUser(null)
+    notifyChange()
   }, [])
 
   const exitGuestMode = useCallback(() => {
     sessionStorage.removeItem(SESSION_KEY)
     sessionStorage.removeItem('guestNotifications')
     sessionStorage.removeItem('guestKnownBuildingIds')
-    setUserState(null)
-    broadcast()
+    setUser(null)
+    notifyChange()
   }, [])
 
   const updateUser = useCallback((userData) => {
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData))
-    setUserState(userData)
-    broadcast()
+    setUser(userData)
+    notifyChange()
   }, [])
 
-  return { user, login, logout, updateUser, continueAsGuest, exitGuestMode }
+  const value = {
+    user,
+    login,
+    logout,
+    updateUser,
+    continueAsGuest,
+    exitGuestMode,
+  }
+
+  return React.createElement(AuthContext.Provider, { value }, children)
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext)
+  if (!context) {
+    // Fallback if component is somehow rendered outside AuthProvider
+    return {
+      user: readUser(),
+      login: (userData) => {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData))
+        window.dispatchEvent(new Event(AUTH_EVENT_KEY))
+      },
+      logout: () => {
+        sessionStorage.removeItem(SESSION_KEY)
+        window.dispatchEvent(new Event(AUTH_EVENT_KEY))
+      },
+      updateUser: (userData) => {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(userData))
+        window.dispatchEvent(new Event(AUTH_EVENT_KEY))
+      },
+      continueAsGuest: () => {
+        const guestUser = { role: 'guest', name: 'Guest User', isGuest: true }
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(guestUser))
+        window.dispatchEvent(new Event(AUTH_EVENT_KEY))
+        return guestUser
+      },
+      exitGuestMode: () => {
+        sessionStorage.removeItem(SESSION_KEY)
+        window.dispatchEvent(new Event(AUTH_EVENT_KEY))
+      },
+    }
+  }
+  return context
 }
