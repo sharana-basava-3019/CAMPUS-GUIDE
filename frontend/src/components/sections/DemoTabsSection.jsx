@@ -1,16 +1,36 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useMemo, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PrimaryButton } from '../ui/Buttons'
 import { useToast } from '../ui/ToastSystem'
 import { LoginPreviewForm } from './LoginPreviewForm'
 import { useAuth } from '../../hooks/useAuth'
 import AuthGuard from '../ui/AuthGuard'
-import ThreeCanvas from '../map/ThreeCanvas'
-import MapUI from '../map/MapUI'
 import { canAccess } from '../../utils/accessControl'
 import axios from 'axios'
 import { API_BASE_URL } from '../../config/api'
+
+// three.js + r3f loaded on-demand — only when user clicks the "3D Map" tab
+const ThreeCanvas = lazy(() => import('../map/ThreeCanvas'))
+const MapUI       = lazy(() => import('../map/MapUI'))
+
+function ThreeSpinner() {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      justifyContent: 'center', minHeight: '420px', gap: '14px',
+    }}>
+      <div style={{
+        width: 36, height: 36, borderRadius: '50%',
+        border: '3px solid rgba(34,211,238,0.18)',
+        borderTopColor: '#22d3ee',
+        animation: 'spin 0.7s linear infinite',
+      }} />
+      <p style={{ fontSize: 13, color: 'rgba(148,163,184,0.8)' }}>Loading 3D Map…</p>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    </div>
+  )
+}
 
 const tabs = ['Search', '3D Map', 'Download']
 
@@ -290,10 +310,12 @@ function MapTabContent() {
   return (
     <AuthGuard>
       {/* No overflow-hidden — it clips the Canvas */}
-      <div className="relative w-full" style={{ minHeight: '420px' }}>
-        <ThreeCanvas />
-        <MapUI />
-      </div>
+      <Suspense fallback={<ThreeSpinner />}>
+        <div className="relative w-full" style={{ minHeight: '420px' }}>
+          <ThreeCanvas />
+          <MapUI />
+        </div>
+      </Suspense>
     </AuthGuard>
   )
 }

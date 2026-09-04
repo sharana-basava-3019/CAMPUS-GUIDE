@@ -254,8 +254,8 @@ export const TestimonialsSection = () => {
             </motion.div>
             
             {/* Visual fade edges */}
-            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-24 bg-gradient-to-r from-white to-transparent" />
-            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-24 bg-gradient-to-l from-white to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-24 bg-gradient-to-r from-bgSecondary to-transparent" />
+            <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-24 bg-gradient-to-l from-bgSecondary to-transparent" />
           </div>
 
           {/* Dots */}

@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 const LINK_MAP = {
-  'About Us':   'route:/about',
-  Services:     'scroll:test-demo',
+  'About Us': 'route:/about',
+  Services: 'scroll:test-demo',
   'Privacy Policy': 'route:/privacy',
-  'Terms of Use':   'route:/terms',
+  'Terms of Use': 'route:/terms',
 }
 
 const footerColumns = {
@@ -93,7 +93,7 @@ export const Footer = () => {
                 </a>
               </li>
               <li>
-                <span className="text-sm text-textAccent">+91 9876543210</span>
+                <span className="text-sm text-textAccent">+91 8123288067</span>
               </li>
             </ul>
           </div>

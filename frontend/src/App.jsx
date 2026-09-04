@@ -1,11 +1,20 @@
+import { lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { Navbar } from './components/sections/Navbar'
 import { HeroSection } from './components/sections/HeroSection'
-import { AboutPlatformSection } from './components/sections/AboutPlatformSection'
-import { DemoTabsSection } from './components/sections/DemoTabsSection'
-import { FeaturesSection } from './components/sections/FeaturesSection'
-import { TestimonialsSection } from './components/sections/TestimonialsSection'
-import { Footer } from './components/sections/Footer'
+
+// Below-fold sections — lazy-loaded so they don't block the first paint.
+// three.js (inside DemoTabsSection) is also deferred until the user scrolls down.
+const AboutPlatformSection = lazy(() => import('./components/sections/AboutPlatformSection').then(m => ({ default: m.AboutPlatformSection })))
+const DemoTabsSection      = lazy(() => import('./components/sections/DemoTabsSection').then(m => ({ default: m.DemoTabsSection })))
+const FeaturesSection      = lazy(() => import('./components/sections/FeaturesSection').then(m => ({ default: m.FeaturesSection })))
+const TestimonialsSection  = lazy(() => import('./components/sections/TestimonialsSection').then(m => ({ default: m.TestimonialsSection })))
+const Footer               = lazy(() => import('./components/sections/Footer').then(m => ({ default: m.Footer })))
+
+// Lightweight below-fold placeholder — matches section height to prevent layout shift
+function SectionSkeleton({ minH = '40vh' }) {
+  return <div style={{ minHeight: minH }} />
+}
 
 export default function App() {
   return (
@@ -18,19 +27,40 @@ export default function App() {
       <div className="relative z-10 flex min-h-screen flex-1 flex-col">
         <Navbar />
         <main className="flex-1 space-y-12 pb-10 transition-all duration-300 md:space-y-14 md:pb-12">
+          {/* Hero is eager — visible immediately on load */}
           <HeroSection />
-          <AboutPlatformSection />
-          <DemoTabsSection />
-          <FeaturesSection />
-          <TestimonialsSection />
+
+          {/* Below-fold sections deferred until JS is idle */}
+          <Suspense fallback={<SectionSkeleton minH="58vh" />}>
+            <AboutPlatformSection />
+          </Suspense>
+          <Suspense fallback={<SectionSkeleton minH="520px" />}>
+            <DemoTabsSection />
+          </Suspense>
+          <Suspense fallback={<SectionSkeleton minH="340px" />}>
+            <FeaturesSection />
+          </Suspense>
+          <Suspense fallback={<SectionSkeleton minH="420px" />}>
+            <TestimonialsSection />
+          </Suspense>
         </main>
-        <Footer />
-        <motion.div
+
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+
+        {/* Ambient glow — CSS animation instead of framer-motion to keep JS thread free */}
+        <div
           aria-hidden
           className="pointer-events-none fixed -bottom-24 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-accent/20 blur-3xl"
-          animate={{ opacity: [0.3, 0.55, 0.3], scale: [1, 1.08, 1] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ animation: 'ambientPulse 10s ease-in-out infinite' }}
         />
+        <style>{`
+          @keyframes ambientPulse {
+            0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(1); }
+            50%       { opacity: 0.55; transform: translateX(-50%) scale(1.08); }
+          }
+        `}</style>
       </div>
     </div>
   )

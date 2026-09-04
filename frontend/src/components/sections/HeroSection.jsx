@@ -49,17 +49,26 @@ export const HeroSection = () => {
       className="sticky top-0 z-10 flex h-screen w-full origin-top items-center overflow-hidden px-4 pt-8 sm:px-6 lg:px-8"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden border border-accentCyan/15 bg-[linear-gradient(135deg,rgba(15,23,42,0.9),rgba(30,58,138,0.32))] backdrop-blur-xs">
-        <motion.div
+        {/* CSS-animated orbs — runs on compositor, no JS thread cost */}
+        <div
           className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-accentCyan/20 blur-3xl"
-          animate={{ x: [0, 28, 0], y: [0, -12, 0] }}
-          transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ animation: 'heroOrb1 11s ease-in-out infinite' }}
         />
-        <motion.div
+        <div
           className="absolute -right-24 bottom-4 h-72 w-72 rounded-full bg-accent/25 blur-3xl"
-          animate={{ x: [0, -20, 0], y: [0, 14, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ animation: 'heroOrb2 10s ease-in-out infinite' }}
         />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(34,211,238,0.16),transparent_45%),radial-gradient(circle_at_72%_75%,rgba(245,158,11,0.16),transparent_42%)]" />
+        <style>{`
+          @keyframes heroOrb1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(28px, -12px); }
+          }
+          @keyframes heroOrb2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-20px, 14px); }
+          }
+        `}</style>
       </div>
 
       <motion.div
