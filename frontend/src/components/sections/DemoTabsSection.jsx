@@ -581,36 +581,53 @@ function DownloadTabContent() {
           className="min-h-[420px] rounded-2xl border border-white/10 bg-[#3C5A73]/30 p-5 backdrop-blur-md flex flex-col sm:min-h-[460px] sm:p-8"
         >
           <h3 className="font-display text-xl text-textPrimary">Bookmarked Resources</h3>
-          <div className={listContainerClasses}>
-            {loadingData ? (
-              <p className="text-sm text-textAccent/80">Loading...</p>
-            ) : bookmarks.length === 0 ? (
-              <p className="text-sm text-textAccent/80">No bookmarks yet.</p>
-            ) : (
-              bookmarks.map((item) => (
-                <div key={item._id} className={listItemClasses}>
-                  <p className="text-sm font-medium text-textPrimary truncate">{item.title}</p>
-                  <p className="mt-1 text-xs text-textAccent">{item.subject} · {item.location}</p>
-                  <div className="mt-2 flex items-center gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleOpenResource(item.fileUrl)}
-                      className="text-xs text-accentCyan transition-colors duration-300 hover:text-[#67e8f9]"
-                    >
-                      Open Resource
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleResourceDownload(item.resource, item.title)}
-                      className="text-xs text-accentCyan transition-colors duration-300 hover:text-[#67e8f9]"
-                    >
-                      Download Again
-                    </button>
+          {(() => {
+            // Build a set of downloaded resource IDs for O(1) lookup
+            const downloadedIds = new Set(downloads.map((d) => String(d.resource)))
+            return (
+              <div className={listContainerClasses}>
+                {loadingData ? (
+                  <p className="text-sm text-textAccent/80">Loading...</p>
+                ) : bookmarks.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
+                      <svg className="h-5 w-5 text-textAccent/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                    </div>
+                    <p className="text-sm font-medium text-textAccent/70">No Bookmarks</p>
+                    <p className="text-xs text-textAccent/45">Resources you bookmark will appear here.</p>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
+                ) : (
+                  bookmarks.map((item) => {
+                    const alreadyDownloaded = downloadedIds.has(String(item.resource))
+                    return (
+                      <div key={item._id} className={listItemClasses}>
+                        <p className="text-sm font-medium text-textPrimary truncate">{item.title}</p>
+                        <p className="mt-1 text-xs text-textAccent">{item.subject} · {item.location}</p>
+                        <div className="mt-2 flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenResource(item.fileUrl)}
+                            className="text-xs text-accentCyan transition-colors duration-300 hover:text-[#67e8f9]"
+                          >
+                            Open Resource
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleResourceDownload(item.resource, item.title)}
+                            className="text-xs text-accentCyan transition-colors duration-300 hover:text-[#67e8f9]"
+                          >
+                            {alreadyDownloaded ? 'Download Again' : 'Download'}
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
+              </div>
+            )
+          })()}
         </motion.div>
       ) : (
         <motion.div
