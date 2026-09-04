@@ -580,7 +580,7 @@ function DownloadTabContent() {
           animate={{ opacity: 1, scale: 1 }}
           className="min-h-[420px] rounded-2xl border border-white/10 bg-[#3C5A73]/30 p-5 backdrop-blur-md flex flex-col sm:min-h-[460px] sm:p-8"
         >
-          <h3 className="font-display text-xl text-textPrimary">Bookmarked Resources</h3>
+          <h3 className="font-display text-xl text-textPrimary">Course & Study Materials</h3>
           {(() => {
             // Build a set of downloaded resource IDs for O(1) lookup
             const downloadedIds = new Set(downloads.map((d) => String(d.resource)))
@@ -592,11 +592,11 @@ function DownloadTabContent() {
                   <div className="flex flex-col items-center justify-center gap-3 py-10 text-center">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/10 bg-white/5">
                       <svg className="h-5 w-5 text-textAccent/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                       </svg>
                     </div>
-                    <p className="text-sm font-medium text-textAccent/70">No Bookmarks</p>
-                    <p className="text-xs text-textAccent/45">Resources you bookmark will appear here.</p>
+                    <p className="text-sm font-medium text-textAccent/70">No Resources Available</p>
+                    <p className="text-xs text-textAccent/45">Course materials and saved resources will appear here.</p>
                   </div>
                 ) : (
                   bookmarks.map((item) => {
